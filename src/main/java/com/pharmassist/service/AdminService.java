@@ -30,4 +30,14 @@ public class AdminService {
 						.map((admin)-> adminMapper.mapToAdminResponse(admin))
 						.orElseThrow(()-> new AdminNotFoundByIdException("Failed to find the Admin"));
 	}
+
+	public AdminResponse updateAdmin(String adminId, AdminRequest adminRequest) {
+		return adminRepository.findById(adminId)
+						.map((exAdmin)->{
+							adminMapper.mapToAdmin(adminRequest, exAdmin);
+							return adminRepository.save(exAdmin);
+						})
+						.map(adminMapper::mapToAdminResponse)
+						.orElseThrow(()-> new AdminNotFoundByIdException("Failed to Update the Admin"));
+	}
 }
