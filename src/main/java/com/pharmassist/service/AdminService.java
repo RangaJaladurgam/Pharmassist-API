@@ -23,4 +23,10 @@ public class AdminService {
 		Admin admin = adminRepository.save(adminMapper.mapToAdmin(adminRequest, new Admin()));
 		return adminMapper.mapToAdminResponse(admin);
 	}
+
+	public AdminResponse findAdmin(String adminId) {
+		return adminRepository.findById(adminId)
+						.map((admin)-> adminMapper.mapToAdminResponse(admin))
+						.orElseThrow(null);
+	}
 }

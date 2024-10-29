@@ -3,10 +3,11 @@ package com.pharmassist.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.pharmassist.repository.AdminRepository;
 import com.pharmassist.requestdto.AdminRequest;
 import com.pharmassist.responsedto.AdminResponse;
 import com.pharmassist.service.AdminService;
@@ -29,5 +30,13 @@ public class AdminController {
 		AdminResponse adminResponse = adminService.saveUser(adminRequest);
 		return response.success(HttpStatus.CREATED, "Admin Created", adminResponse);
 	}
+	
+	@GetMapping("/admins/{adminId}")
+	public ResponseEntity<ResponseStructure<AdminResponse>> findAdmin(@PathVariable String adminId){
+		AdminResponse adminResponse = adminService.findAdmin(adminId);
+		return response.success(HttpStatus.FOUND,"Admin found by Id", adminResponse);
+	}
+	
+	
 
 }
