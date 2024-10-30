@@ -17,6 +17,8 @@ import com.pharmassist.service.AdminService;
 import com.pharmassist.util.AppResponseBuilder;
 import com.pharmassist.util.ResponseStructure;
 
+import jakarta.validation.Valid;
+
 @Controller
 public class AdminController {
 
@@ -29,7 +31,7 @@ public class AdminController {
 	}
 	
 	@PostMapping("/admins")
-	public ResponseEntity<ResponseStructure<AdminResponse>> saveAdmin(@RequestBody AdminRequest adminRequest){
+	public ResponseEntity<ResponseStructure<AdminResponse>> saveAdmin(@RequestBody @Valid AdminRequest adminRequest){
 		AdminResponse adminResponse = adminService.saveUser(adminRequest);
 		return response.success(HttpStatus.CREATED, "Admin Created", adminResponse);
 	}
