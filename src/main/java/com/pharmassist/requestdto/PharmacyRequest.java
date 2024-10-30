@@ -8,7 +8,7 @@ public class PharmacyRequest {
 	
 	@NotBlank(message = "Name cannot be blank")
 	@NotNull(message = "Name cannot be null")
-	@Pattern(regexp = "^[a-zA-Z]$")
+	@Pattern(regexp = "^[A-Za-z\\s'-]{1,50}$",message = "Invalid Name")
 	private String name;
 	
 	
