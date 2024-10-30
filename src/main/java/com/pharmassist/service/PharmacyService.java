@@ -1,5 +1,7 @@
 package com.pharmassist.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.pharmassist.entity.Admin;
@@ -26,8 +28,8 @@ public class PharmacyService {
 		this.adminRepository=adminRepository;
 	}
 
-	public PharmacyResponse savePharmacy(PharmacyRequest pharmacyRequest,String adminId) {
-		
+	
+	public PharmacyResponse savePharmacy(PharmacyRequest pharmacyRequest,String adminId) {	
 		 return adminRepository.findById(adminId)
 						.map((admin)-> {
 							Pharmacy pharmacy = pharmacyRepository.save(pharmacyMapper.mapToPhamacy(pharmacyRequest, new Pharmacy()));
@@ -37,7 +39,14 @@ public class PharmacyService {
 						})
 						.map(pharmacyMapper::mapToPharmacyResponse)
 						.orElseThrow(()-> new AdminNotFoundByIdException("Failed to add Pharmacy due to no Admin found"));
-		
+	}
+
+
+	public List<PharmacyResponse> findAllPharmacy() {
+		return pharmacyRepository.findAll()
+							.stream()
+							.map(pharmacyMapper::mapToPharmacyResponse)
+							.toList();
 	}
 	
 	
