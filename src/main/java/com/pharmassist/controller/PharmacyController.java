@@ -30,7 +30,7 @@ public class PharmacyController {
 		this.response = response;
 	}
 	
-	@PostMapping("/pharmacy/{adminId}")
+	@PostMapping("/admins/{adminId}/pharmacy")
 	public ResponseEntity<ResponseStructure<PharmacyResponse>> savePharmacy(@RequestBody @Valid PharmacyRequest pharmacyRequest,@PathVariable String adminId){
 		PharmacyResponse pharmacyResponse = pharmacyService.savePharmacy(pharmacyRequest,adminId);
 		return response.success(HttpStatus.CREATED, "Pharmacy Added", pharmacyResponse);
@@ -42,9 +42,9 @@ public class PharmacyController {
 		return response.success(HttpStatus.FOUND, "Pharmacies Found", pharmacyResponses);
 	}
 	
-	@GetMapping("/pharmacy/{pharmacyId}")
-	public ResponseEntity<ResponseStructure<PharmacyResponse>> findPharmacy(@PathVariable String pharmacyId){
-		PharmacyResponse pharmacyResponse = pharmacyService.findPharmacy(pharmacyId);
+	@GetMapping("/admins/{adminId}/pharmacy")
+	public ResponseEntity<ResponseStructure<PharmacyResponse>> findPharmacy(@PathVariable String adminId){
+		PharmacyResponse pharmacyResponse = pharmacyService.findPharmacy(adminId);
 		return response.success(HttpStatus.FOUND, "Pharmacy Found", pharmacyResponse);
 	}
 	

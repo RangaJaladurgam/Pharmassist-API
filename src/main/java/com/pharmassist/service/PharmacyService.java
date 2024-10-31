@@ -51,10 +51,19 @@ public class PharmacyService {
 	}
 
 
-	public PharmacyResponse findPharmacy(String pharmacyId) {
-		return pharmacyRepository.findById(pharmacyId)
-						.map(pharmacyMapper::mapToPharmacyResponse)
-						.orElseThrow(()-> new PharmacyNotFoundByIdException("Failed to find Pharmacy"));
+	public PharmacyResponse findPharmacy(String adminId) {
+		return adminRepository.findById(adminId)
+								.map((admin)->{
+									Pharmacy pharmacy = admin.getPharmacy();
+									return pharmacy!=null 
+											? pharmacyMapper.mapToPharmacyResponse(pharmacy)
+											: throwPharmacyNotFound();
+								})
+								.orElseThrow(()-> new AdminNotFoundByIdException("Failed to find Pharmacy due to no admin found"));
+	}
+	
+	public static PharmacyResponse throwPharmacyNotFound() {
+		throw new PharmacyNotFoundByIdException("Failed to find Pharmacy due to no pharmacy associated with respective Admin");
 	}
 	
 	
