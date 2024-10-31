@@ -4,16 +4,15 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.pharmassist.entity.Admin;
 import com.pharmassist.entity.Pharmacy;
 import com.pharmassist.exception.AdminNotFoundByIdException;
 import com.pharmassist.exception.PharmacyNotFoundByIdException;
-import com.pharmassist.mapper.AdminMapper;
 import com.pharmassist.mapper.PharmacyMapper;
 import com.pharmassist.repository.AdminRepository;
 import com.pharmassist.repository.PharmacyRepository;
 import com.pharmassist.requestdto.PharmacyRequest;
 import com.pharmassist.responsedto.PharmacyResponse;
+
 
 @Service
 public class PharmacyService {
@@ -64,6 +63,16 @@ public class PharmacyService {
 	
 	public static PharmacyResponse throwPharmacyNotFound() {
 		throw new PharmacyNotFoundByIdException("Failed to find Pharmacy due to no pharmacy associated with respective Admin");
+	}
+
+
+	public PharmacyResponse updatePharmacy(PharmacyRequest pharmacyRequest, String pharmacyId) {
+		return pharmacyRepository.findById(pharmacyId)
+							.map((pharmacy)->{
+								pharmacy = pharmacyRepository.save(pharmacyMapper.mapToPhamacy(pharmacyRequest, pharmacy));
+								return pharmacyMapper.mapToPharmacyResponse(pharmacy);
+							})
+							.orElseThrow(() -> new PharmacyNotFoundByIdException("Failed to Update the Pharmacy"));
 	}
 	
 	

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,6 +47,12 @@ public class PharmacyController {
 	public ResponseEntity<ResponseStructure<PharmacyResponse>> findPharmacy(@PathVariable String adminId){
 		PharmacyResponse pharmacyResponse = pharmacyService.findPharmacy(adminId);
 		return response.success(HttpStatus.FOUND, "Pharmacy Found", pharmacyResponse);
+	}
+	
+	@PutMapping("/pharmacy/{pharmacyId}")
+	public ResponseEntity<ResponseStructure<PharmacyResponse>> updatePharmacy(@RequestBody @Valid PharmacyRequest pharmacyRequest,@PathVariable String pharmacyId){
+		PharmacyResponse pharmacyResponse = pharmacyService.updatePharmacy(pharmacyRequest,pharmacyId);
+		return response.success(HttpStatus.OK, "Updated Pharmacy", pharmacyResponse);
 	}
 	
 }
