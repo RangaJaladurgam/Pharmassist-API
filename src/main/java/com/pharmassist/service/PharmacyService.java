@@ -1,6 +1,7 @@
 package com.pharmassist.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -51,18 +52,9 @@ public class PharmacyService {
 
 
 	public PharmacyResponse findPharmacy(String adminId) {
-		return adminRepository.findById(adminId)
-								.map((admin)->{
-									Pharmacy pharmacy = admin.getPharmacy();
-									return pharmacy!=null 
-											? pharmacyMapper.mapToPharmacyResponse(pharmacy)
-											: throwPharmacyNotFound();
-								})
-								.orElseThrow(()-> new AdminNotFoundByIdException("Failed to find Pharmacy due to no admin found"));
-	}
-	
-	public static PharmacyResponse throwPharmacyNotFound() {
-		throw new PharmacyNotFoundByIdException("Failed to find Pharmacy due to no pharmacy associated with respective Admin");
+		return adminRepository.findPharmacyByAdminId(adminId)
+						.map(pharmacyMapper::mapToPharmacyResponse)
+						.orElseThrow(()-> new PharmacyNotFoundByIdException("Failed to find Pharmacy"));
 	}
 
 
