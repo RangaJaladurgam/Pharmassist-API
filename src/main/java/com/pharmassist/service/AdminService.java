@@ -14,8 +14,8 @@ import com.pharmassist.responsedto.AdminResponse;
 @Service
 public class AdminService {
 	
-	private AdminRepository adminRepository;
-	private AdminMapper adminMapper;
+	private final AdminRepository adminRepository;
+	private final AdminMapper adminMapper;
 
 	public AdminService(AdminRepository adminRepository,AdminMapper adminMapper) {
 		this.adminRepository = adminRepository;
