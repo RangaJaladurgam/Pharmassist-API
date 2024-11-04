@@ -1,9 +1,12 @@
 package com.pharmassist.entity;
 
+import java.util.List;
+
 import com.pharmassist.config.GenerateCustomId;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Pharmacy {
@@ -14,6 +17,10 @@ public class Pharmacy {
 	private String name;
 	private String gstNo;
 	private String licenseNo;
+	
+	@OneToMany
+	private List<Patient> patients;
+	
 	
 	public String getPharmacyId() {
 		return pharmacyId;
@@ -38,6 +45,12 @@ public class Pharmacy {
 	}
 	public void setLicenseNo(String licenseNo) {
 		this.licenseNo = licenseNo;
+	}
+	public List<Patient> getPatients() {
+		return patients;
+	}
+	public void setPatients(List<Patient> patients) {
+		this.patients = patients;
 	}
 	
 	
