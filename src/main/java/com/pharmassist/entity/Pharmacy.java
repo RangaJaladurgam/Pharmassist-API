@@ -7,6 +7,7 @@ import com.pharmassist.config.GenerateCustomId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Pharmacy {
@@ -18,8 +19,19 @@ public class Pharmacy {
 	private String gstNo;
 	private String licenseNo;
 	
+	@OneToOne(mappedBy = "pharmacy")
+	private Admin admin;
+	
 	@OneToMany
 	private List<Patient> patients;
+	
+	public Admin getAdmin() {
+		return admin;
+	}
+	public void setAdmin(Admin admin) {
+		this.admin = admin;
+	}
+
 	
 	
 	public String getPharmacyId() {

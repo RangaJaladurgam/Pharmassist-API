@@ -28,15 +28,9 @@ public class PatientRequest {
 	@Email(regexp = "^[\\w.%+-]+@[\\w.-]+\\.[A-Za-z]{2,6}$",message = "Email must be in a valid format, e.g., example@example.com.")
 	private String email;
 	
-	@NotBlank(message = "Gender cannot be Blank")
-	@NotNull(message = "Gender cannot be null")
-	@Pattern(regexp = "^(MALE|FEMALE|OTHER)$",message = "Gender must be either MALE, FEMALE, or OTHER.")
-	@Enumerated(EnumType.STRING)
+
 	private Gender gender;
 	
-	@NotBlank(message = "Date of birth cannot be blank")
-	@NotNull(message = "Date of birth cannot be null")
-	@Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$",message = "Date of birth must be in the format yyyy-MM-dd.")
 	private LocalDate dateOfBirth;
 	
 	

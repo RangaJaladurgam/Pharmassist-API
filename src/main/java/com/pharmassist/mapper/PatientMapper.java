@@ -10,7 +10,7 @@ import com.pharmassist.responsedto.PatientResponse;
 public class PatientMapper {
 
 	
-	public Patient mapToPaient(PatientRequest patientRequest,Patient patient) {
+	public Patient mapToPatient(PatientRequest patientRequest,Patient patient) {
 		patient.setName(patientRequest.getName());
 		patient.setPhoneNumber(patientRequest.getPhoneNumber());
 		patient.setEmail(patientRequest.getEmail());
@@ -20,7 +20,7 @@ public class PatientMapper {
 		return patient;
 	}
 	
-	public PatientResponse mapPatientResponse(Patient patient) {
+	public PatientResponse mapToPatientResponse(Patient patient) {
 		PatientResponse patientResponse = new PatientResponse();
 		patientResponse.setName(patient.getName());
 		patientResponse.setPatientId(patient.getPatientId());

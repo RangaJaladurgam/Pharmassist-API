@@ -22,6 +22,7 @@ public class PharmacyMapper {
 		pharmacyResponse.setLicenseNo(pharmacy.getLicenseNo());
 		pharmacyResponse.setPharmacyId(pharmacy.getPharmacyId());
 		pharmacyResponse.setGstNo(pharmacy.getGstNo());
+	
 		return pharmacyResponse;
 	}
 }
