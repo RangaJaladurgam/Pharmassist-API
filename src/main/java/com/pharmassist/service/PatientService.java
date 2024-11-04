@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.pharmassist.entity.Patient;
+import com.pharmassist.exception.NoPatientsFoundException;
 import com.pharmassist.exception.PharmacyNotFoundByIdException;
 import com.pharmassist.mapper.PatientMapper;
 import com.pharmassist.repository.PatientRepository;
@@ -42,8 +43,21 @@ public class PatientService {
 							patient = patientRepository.save(patient);
 							return patientMapper.mapToPatientResponse(patient);
 						})
-						.orElseThrow(()-> new PharmacyNotFoundByIdException("Failed to Add Patient due to No Pharmacy Found with id : "+pharmacyId));
+						.orElseThrow(()-> new PharmacyNotFoundByIdException("Failed to Add Patient due to No Pharmacy "
+								+ "Found with id : "+pharmacyId));
 		
+	}
+
+	
+	public List<PatientResponse> findAllPatientsByPharmacy(String pharmacyId) {
+		
+		List<Patient> patients = patientRepository.findPatientsByPharmacy(pharmacyId);
+		if(patients.isEmpty())
+			throw new NoPatientsFoundException("Failed to find all pharmacy");
+		return patients.stream()
+						.map(patientMapper::mapToPatientResponse)
+						.toList();
+						
 	}
 	
 	

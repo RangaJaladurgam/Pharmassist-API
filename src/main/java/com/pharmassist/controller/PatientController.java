@@ -1,12 +1,16 @@
 package com.pharmassist.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pharmassist.entity.Patient;
 import com.pharmassist.requestdto.PatientRequest;
 import com.pharmassist.responsedto.PatientResponse;
 import com.pharmassist.service.PatientService;
@@ -35,7 +39,7 @@ public class PatientController {
 	
 	@Operation(description = "The End-point can be used to Add Patient",
 			responses = {
-					@ApiResponse(responseCode = "302",description = "Patient Added",
+					@ApiResponse(responseCode = "201",description = "Patient Added",
 							content = {
 									@Content(schema = @Schema(implementation = PatientResponse.class))
 							}),
@@ -52,6 +56,23 @@ public class PatientController {
 	private ResponseEntity<ResponseStructure<PatientResponse>> addPatient(@RequestBody PatientRequest patientRequest,@PathVariable String pharmacyId){
 		PatientResponse patientResponse = patientService.addPatient(patientRequest,pharmacyId);
 		return response.success(HttpStatus.CREATED,"Patient Added", patientResponse);
+	}
+	
+	@Operation(description = "The End-point can be used to Find all patients by Pharmacy Id",
+			responses = {
+					@ApiResponse(responseCode = "302",description = "Patients Found",
+							content = {
+									@Content(schema = @Schema(implementation = ResponseStructure.class))
+							}),
+					@ApiResponse(responseCode = "404",description = "No Patients Found",
+							content = {
+									@Content(schema = @Schema(implementation = ErrorStructure.class))
+							})
+			})
+	@GetMapping("pharmacy/{pharmacyId}/patients")
+	private ResponseEntity<ResponseStructure<List<PatientResponse>>> findAllPatientsByPharmacy(@PathVariable String pharmacyId){
+		List<PatientResponse> patientsResponses = patientService.findAllPatientsByPharmacy(pharmacyId);
+		return response.success(HttpStatus.FOUND, "Patients Found", patientsResponses);
 	}
 	
 	

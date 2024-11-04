@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.pharmassist.entity.Admin;
 import com.pharmassist.exception.AdminNotFoundByIdException;
+import com.pharmassist.exception.NoAdminsFoundException;
 import com.pharmassist.mapper.AdminMapper;
 import com.pharmassist.repository.AdminRepository;
 import com.pharmassist.requestdto.AdminRequest;
@@ -44,10 +45,11 @@ public class AdminService {
 	}
 
 	public List<AdminResponse> findAllAdmins() {
-		
-		return adminRepository.findAll()
-						.stream()
-						.map(adminMapper::mapToAdminResponse)
-						.toList();
+		List<Admin> admins = adminRepository.findAll();
+		if(admins.isEmpty())
+			throw new NoAdminsFoundException("Failed to find all Admins");
+		return admins.stream()
+					.map(adminMapper::mapToAdminResponse)
+					.toList();
 	}
 }
