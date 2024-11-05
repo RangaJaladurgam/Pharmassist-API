@@ -25,6 +25,9 @@ public class Pharmacy {
 	@OneToMany
 	private List<Patient> patients;
 	
+	@OneToMany
+	private List<Medicine> medicines;
+	
 	public Admin getAdmin() {
 		return admin;
 	}
