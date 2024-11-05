@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.pharmassist.entity.Pharmacy;
 import com.pharmassist.exception.AdminNotFoundByIdException;
+import com.pharmassist.exception.NoPharmaciesFoundException;
 import com.pharmassist.exception.PharmacyNotFoundByIdException;
 import com.pharmassist.mapper.PharmacyMapper;
 import com.pharmassist.repository.AdminRepository;
@@ -44,10 +45,12 @@ public class PharmacyService {
 
 
 	public List<PharmacyResponse> findAllPharmacy() {
-		return pharmacyRepository.findAll()
-							.stream()
-							.map(pharmacyMapper::mapToPharmacyResponse)
-							.toList();
+		List<Pharmacy> pharmacies = pharmacyRepository.findAll();
+		if(pharmacies.isEmpty())
+			throw new NoPharmaciesFoundException("Failed to Find All Pharmacies");
+		return pharmacies.stream()
+						.map(pharmacyMapper::mapToPharmacyResponse)
+						.toList();
 	}
 
 
