@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,6 +24,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @Tag(name = "Patient Controller",description = "The End-points can be used to operate on Patient Entity")
@@ -53,7 +55,7 @@ public class PatientController {
 							})
 			})
 	@PostMapping("/pharmacy/{pharmacyId}/patients")
-	private ResponseEntity<ResponseStructure<PatientResponse>> addPatient(@RequestBody PatientRequest patientRequest,@PathVariable String pharmacyId){
+	private ResponseEntity<ResponseStructure<PatientResponse>> addPatient(@RequestBody @Valid PatientRequest patientRequest,@PathVariable String pharmacyId){
 		PatientResponse patientResponse = patientService.addPatient(patientRequest,pharmacyId);
 		return response.success(HttpStatus.CREATED,"Patient Added", patientResponse);
 	}
@@ -69,10 +71,31 @@ public class PatientController {
 									@Content(schema = @Schema(implementation = ErrorStructure.class))
 							})
 			})
-	@GetMapping("pharmacy/{pharmacyId}/patients")
+	@GetMapping("/pharmacy/{pharmacyId}/patients")
 	private ResponseEntity<ResponseStructure<List<PatientResponse>>> findAllPatientsByPharmacy(@PathVariable String pharmacyId){
 		List<PatientResponse> patientsResponses = patientService.findAllPatientsByPharmacy(pharmacyId);
 		return response.success(HttpStatus.FOUND, "Patients Found", patientsResponses);
+	}
+	
+	@Operation(description = "The End-point can be used to update Patient by Patient ID",
+			responses = {
+					@ApiResponse(responseCode = "200",description = "Patient Updated",
+							content = {
+									@Content(schema = @Schema(implementation = PatientResponse.class))
+							}),
+					@ApiResponse(responseCode = "400",description = "Bad Patient Request",
+							content = {
+									@Content(schema = @Schema(implementation = ErrorStructure.class))
+							}),
+					@ApiResponse(responseCode = "404",description = "Patient Not found",
+							content = {
+									@Content(schema = @Schema(implementation = ErrorStructure.class))
+							})
+			})
+	@PutMapping("/patients/{patientId}")
+	private ResponseEntity<ResponseStructure<PatientResponse>> updatePatient(@RequestBody @Valid PatientRequest patientRequest,@PathVariable String patientId){
+		PatientResponse patientResponse = patientService.updatePatient(patientRequest,patientId);
+		return response.success(HttpStatus.OK, "Patient Updated", patientResponse);
 	}
 	
 	
