@@ -19,7 +19,7 @@ public class Medicine {
 	private String medicineId;
 	private String name;
 	private String category;
-	private String[] ingredients;
+	private String ingredients;
 	private int dosageInMg;
 	@Enumerated(EnumType.STRING)
 	private Form form;
@@ -55,11 +55,11 @@ public class Medicine {
 		this.category = category;
 	}
 
-	public String[] getIngredients() {
+	public String getIngredients() {
 		return ingredients;
 	}
 
-	public void setIngredients(String[] ingredients) {
+	public void setIngredients(String ingredients) {
 		this.ingredients = ingredients;
 	}
 
@@ -117,6 +117,14 @@ public class Medicine {
 
 	public void setPharmacy(Pharmacy pharmacy) {
 		this.pharmacy = pharmacy;
+	}
+
+	@Override
+	public String toString() {
+		return "Medicine [medicineId=" + medicineId + ", name=" + name + ", category=" + category + ", ingredients="
+				+ ingredients + ", dosageInMg=" + dosageInMg + ", form=" + form + ", manufacturer=" + manufacturer
+				+ ", stockQuantity=" + stockQuantity + ", expiryDate=" + expiryDate + ", price=" + price + ", pharmacy="
+				+ pharmacy + "]";
 	}
 	
 	

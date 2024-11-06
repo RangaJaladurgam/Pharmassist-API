@@ -12,7 +12,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
 
 public class MedicineRequest {
 	
@@ -24,8 +23,8 @@ public class MedicineRequest {
 	private String category;
 	
 	@NotNull(message = "Ingredients cannot be null")
-	@Size(min = 1, message = "At least one ingredient is required")
-	private String[] ingredients;
+	@NotBlank(message = "Ingredients cannot be blank")
+	private String ingredients;
 	
 	@Positive(message = "Dosage must be a positive value")
 	private int dosageInMg;
@@ -62,10 +61,10 @@ public class MedicineRequest {
 	public void setCategory(String category) {
 		this.category = category;
 	}
-	public String[] getIngredients() {
+	public String getIngredients() {
 		return ingredients;
 	}
-	public void setIngredients(String[] ingredients) {
+	public void setIngredients(String ingredients) {
 		this.ingredients = ingredients;
 	}
 	public int getDosageInMg() {
