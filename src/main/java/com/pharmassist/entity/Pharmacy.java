@@ -22,8 +22,11 @@ public class Pharmacy {
 	@OneToOne(mappedBy = "pharmacy")
 	private Admin admin;
 	
-	@OneToMany
+	@OneToMany(mappedBy = "pharmacy")
 	private List<Patient> patients;
+	
+	@OneToMany(mappedBy = "pharmacy")
+	private List<Medicine> medicines;
 	
 	public Admin getAdmin() {
 		return admin;
@@ -32,8 +35,6 @@ public class Pharmacy {
 		this.admin = admin;
 	}
 
-	
-	
 	public String getPharmacyId() {
 		return pharmacyId;
 	}
