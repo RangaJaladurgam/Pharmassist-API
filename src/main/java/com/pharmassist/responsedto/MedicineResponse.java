@@ -12,7 +12,7 @@ public class MedicineResponse {
 	private String medicineId;
 	private String name;
 	private String category;
-	private String[] ingredients;
+	private String ingredients;
 	private int dosageInMg;
 	@Enumerated(EnumType.STRING)
 	private Form form;
@@ -40,10 +40,10 @@ public class MedicineResponse {
 	public void setCategory(String category) {
 		this.category = category;
 	}
-	public String[] getIngredients() {
+	public String getIngredients() {
 		return ingredients;
 	}
-	public void setIngredients(String[] ingredients) {
+	public void setIngredients(String ingredients) {
 		this.ingredients = ingredients;
 	}
 	public int getDosageInMg() {
