@@ -2,7 +2,7 @@ package com.pharmassist.service;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +23,7 @@ import com.pharmassist.repository.PharmacyRepository;
 import com.pharmassist.responsedto.MedicineResponse;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 
 @Service
 public class MedicineService {
@@ -45,59 +46,46 @@ public class MedicineService {
 		Pharmacy pharmacy = pharmacyRepository.findById(pharmacyId)
 					.orElseThrow(()-> new PharmacyNotFoundByIdException("Failed to Add Medicines because no pharmacy found by Id: "+pharmacyId));
 		
-		try (XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream())){
-			for(Sheet sheet : workbook) {
-                for(Row row : sheet) {
-                    if(row.getRowNum() != 0) {
-                    	Medicine medicine = new Medicine();
-                    	
-                    	try {
-                    	
-                    	String name = row.getCell(0).getStringCellValue();
-                    	medicine.setName(name);
-                    	String category = row.getCell(1).getStringCellValue();
-                    	medicine.setCategory(category);
-                    	int dosageInMg = (int) row.getCell(2).getNumericCellValue();
-                    	medicine.setDosageInMg(dosageInMg);
-                    	Form form = Form.valueOf(row.getCell(3).getStringCellValue().toUpperCase());
-                    	medicine.setForm(form);
-                    	String ingredients = row.getCell(4).getStringCellValue();
-                    	medicine.setIngredients(ingredients);
-                    	String manufacturer = row.getCell(5).getStringCellValue();
-                    	medicine.setManufacturer(manufacturer);
-            
-                    	double price = row.getCell(6).getNumericCellValue() * 84.12;
-                    	price = Math.round(price * 100.0) / 100.0;
-                    	medicine.setPrice(price);
-                    	
-                    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                    	LocalDate date = LocalDate.parse(row.getCell(7).getStringCellValue(),formatter);
-                    	medicine.setExpiryDate(date);
-                   
-                    	medicine.setStockQuantity((int) row.getCell(8).getNumericCellValue());
-                    	
-                   
-                    	
-                    	medicine.setPharmacy(pharmacy);
-                    	System.out.println(medicine);
-                    	
-                    	medicines.add(medicine);
-                    	
-                    	}
-                    	catch(Exception ex) {
-                    		
-                    	}
-                    }
-                    	
-                }
-            }
-			
-
+		try (XSSFWorkbook workBook = new XSSFWorkbook(file.getInputStream())) {
+			for (Sheet sheet : workBook) {
+				for (Row row : sheet) {
+					if (row.getRowNum() != 0) {
+						Medicine medicine = validatedMedicines(row);
+						medicine.setPharmacy(pharmacy);
+						saveMedicine(medicine);
+					}
+				}
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		medicineRepository.saveAll(medicines);
+
 		return "uploaded Successfully!";
+	}
+
+	public void saveMedicine(@Valid Medicine medicine) {
+		medicineRepository.save(medicine);
+	}
+
+	public Medicine validatedMedicines(Row row) {
+		Medicine medicine = new Medicine();
+		try {
+			medicine.setName(row.getCell(0).getStringCellValue());
+			medicine.setCategory(row.getCell(1).getStringCellValue());
+			medicine.setDosageInMg((int) row.getCell(2).getNumericCellValue());
+			medicine.setForm(Form.valueOf((row.getCell(3).getStringCellValue().toUpperCase())));
+			medicine.setIngredients(row.getCell(4).getStringCellValue());
+			medicine.setManufacturer(row.getCell(5).getStringCellValue());
+			medicine.setPrice(row.getCell(6).getNumericCellValue());
+			medicine.setExpiryDate(LocalDate.parse(row.getCell(7).getStringCellValue()));
+			medicine.setStockQuantity((int) row.getCell(8).getNumericCellValue());
+
+		} catch (NullPointerException | IllegalStateException | DateTimeParseException e) {
+			throw new IllegalArgumentException("Invalid data in row " + row.getRowNum(), e);
+		}
+
+		return medicine;
+
 	}
 
 	public List<MedicineResponse> findMedicineByNameOrIngredients(String userInput) {
