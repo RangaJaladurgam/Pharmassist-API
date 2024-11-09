@@ -10,6 +10,12 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 
 @Entity
 public class Medicine {
@@ -17,15 +23,35 @@ public class Medicine {
 	@Id
 	@GenerateCustomId
 	private String medicineId;
+	@NotNull(message = "Name cannot be null")
+	@NotBlank(message = "Name cannot be blank")
+	@Pattern(regexp = "^[A-Za-z\\s]{2,}$",message = "Name must contain only letters and spaces, with a minimum of 2 characters.")
 	private String name;
+	
 	private String category;
+	
+	@NotNull(message = "Ingredients cannot be null")
+	@NotBlank(message = "Ingredients cannot be blank")
 	private String ingredients;
+	
+	@Positive(message = "Dosage must be a positive value")
 	private int dosageInMg;
+	
+	@NotNull(message = "form cannot be null")
 	@Enumerated(EnumType.STRING)
 	private Form form;
+	
+	@NotNull(message = "Manufacturer cannot be null")
+	@NotBlank(message = "Manufacturer cannot be blank")
 	private String manufacturer;
+	
+	@Min(value = 0, message = "Stock quantity cannot be negative")
 	private int stockQuantity;
+	
+	@Future(message = "Expiry date must be a future date")
 	private LocalDate expiryDate;
+	
+	@Positive(message = "Price must be positive")
 	private double price;
 	
 	@ManyToOne
