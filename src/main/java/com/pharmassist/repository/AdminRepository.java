@@ -12,5 +12,7 @@ import com.pharmassist.entity.Pharmacy;
 public interface AdminRepository extends JpaRepository<Admin, String>{
 
 	@Query("SELECT a.pharmacy FROM Admin a WHERE a.adminId = :adminId")
-    public Optional<Pharmacy> findPharmacyByAdminId(@Param("adminId") String adminId);
+    Optional<Pharmacy> findPharmacyByAdminId(@Param("adminId") String adminId);
+	
+	Optional<Admin> findByEmail(String email);
 }
