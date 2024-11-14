@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pharmassist.requestdto.PharmacyRequest;
 import com.pharmassist.responsedto.PharmacyResponse;
+import com.pharmassist.security.UserDetailsImpl;
 import com.pharmassist.service.PharmacyService;
 import com.pharmassist.util.AppResponseBuilder;
 import com.pharmassist.util.ErrorStructure;
@@ -53,9 +56,11 @@ public class PharmacyController {
 							@Content(schema = @Schema(implementation = ErrorStructure.class))
 					})
 			})
-	@PostMapping("/admins/{adminId}/pharmacy")
-	public ResponseEntity<ResponseStructure<PharmacyResponse>> savePharmacy(@RequestBody @Valid PharmacyRequest pharmacyRequest,@PathVariable String adminId){
-		PharmacyResponse pharmacyResponse = pharmacyService.savePharmacy(pharmacyRequest,adminId);
+	@PostMapping("/admins/pharmacy")
+	public ResponseEntity<ResponseStructure<PharmacyResponse>> savePharmacy(@RequestBody @Valid PharmacyRequest pharmacyRequest){
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String email = authentication.getName(); 
+		PharmacyResponse pharmacyResponse = pharmacyService.savePharmacy(pharmacyRequest,email);
 		return response.success(HttpStatus.CREATED, "Pharmacy Added", pharmacyResponse);
 	}
 	
