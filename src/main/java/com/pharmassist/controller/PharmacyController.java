@@ -113,9 +113,10 @@ public class PharmacyController {
 									@Content(schema = @Schema(implementation = ErrorStructure.class))
 							})
 			})
-	@PutMapping("/pharmacy/{pharmacyId}")
-	public ResponseEntity<ResponseStructure<PharmacyResponse>> updatePharmacy(@RequestBody @Valid PharmacyRequest pharmacyRequest,@PathVariable String pharmacyId){
-		PharmacyResponse pharmacyResponse = pharmacyService.updatePharmacy(pharmacyRequest,pharmacyId);
+	@PutMapping("/pharmacy")
+	public ResponseEntity<ResponseStructure<PharmacyResponse>> updatePharmacy(@RequestBody @Valid PharmacyRequest pharmacyRequest){
+		String email = SecurityContextHolder.getContext().getAuthentication().getName();
+		PharmacyResponse pharmacyResponse = pharmacyService.updatePharmacy(pharmacyRequest,email);
 		return response.success(HttpStatus.OK, "Updated Pharmacy", pharmacyResponse);
 	}
 	
