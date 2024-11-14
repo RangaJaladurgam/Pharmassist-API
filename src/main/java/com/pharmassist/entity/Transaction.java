@@ -23,6 +23,29 @@ public class Transaction {
 	@ManyToOne
 	private Medicine medicine;
 	
+	@ManyToOne
+	private Bill bill;
+	
+	
+	
+	public Pharmacy getPharmacy() {
+		return pharmacy;
+	}
+	public void setPharmacy(Pharmacy pharmacy) {
+		this.pharmacy = pharmacy;
+	}
+	public Medicine getMedicine() {
+		return medicine;
+	}
+	public void setMedicine(Medicine medicine) {
+		this.medicine = medicine;
+	}
+	public Bill getBill() {
+		return bill;
+	}
+	public void setBill(Bill bill) {
+		this.bill = bill;
+	}
 	public String getTransactionId() {
 		return TransactionId;
 	}

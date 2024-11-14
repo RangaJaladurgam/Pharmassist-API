@@ -1,6 +1,7 @@
 package com.pharmassist.entity;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import com.pharmassist.config.GenerateCustomId;
 import com.pharmassist.enums.Gender;
@@ -10,6 +11,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Patient {
@@ -29,6 +31,16 @@ public class Patient {
 	@ManyToOne
 	private Pharmacy pharmacy;
 	
+	@OneToMany
+	private List<Bill> bills;
+	
+	
+	public List<Bill> getBills() {
+		return bills;
+	}
+	public void setBills(List<Bill> bills) {
+		this.bills = bills;
+	}
 	public Pharmacy getPharmacy() {
 		return pharmacy;
 	}
