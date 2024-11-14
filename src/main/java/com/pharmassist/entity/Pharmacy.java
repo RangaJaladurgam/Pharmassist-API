@@ -28,6 +28,22 @@ public class Pharmacy {
 	@OneToMany(mappedBy = "pharmacy")
 	private List<Medicine> medicines;
 	
+	@OneToMany(mappedBy = "pharmacy")
+	private List<Transaction> transactions;
+	
+	
+	public List<Medicine> getMedicines() {
+		return medicines;
+	}
+	public void setMedicines(List<Medicine> medicines) {
+		this.medicines = medicines;
+	}
+	public List<Transaction> getTransactions() {
+		return transactions;
+	}
+	public void setTransactions(List<Transaction> transactions) {
+		this.transactions = transactions;
+	}
 	public Admin getAdmin() {
 		return admin;
 	}
