@@ -31,8 +31,8 @@ public class PharmacyService {
 	}
 
 	
-	public PharmacyResponse savePharmacy(PharmacyRequest pharmacyRequest,String adminId) {	
-		 return adminRepository.findById(adminId)
+	public PharmacyResponse savePharmacy(PharmacyRequest pharmacyRequest,String email) {	
+		 return adminRepository.findByEmail(email)
 						.map((admin)-> {
 							Pharmacy pharmacy = pharmacyRepository.save(pharmacyMapper.mapToPhamacy(pharmacyRequest, new Pharmacy()));
 							admin.setPharmacy(pharmacy);
