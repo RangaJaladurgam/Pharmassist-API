@@ -1,7 +1,6 @@
 package com.pharmassist.entity;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import com.pharmassist.config.GenerateCustomId;
 import com.pharmassist.enums.PaymentMode;
@@ -10,8 +9,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Bill {
@@ -24,20 +24,14 @@ public class Bill {
 	private LocalDateTime dateTime;
 	@Enumerated(EnumType.STRING)
 	private PaymentMode paymentMode;
-	
-	@OneToMany(mappedBy = "bill")
-	private List<Transaction> transactions; 
-	
-	@ManyToOne
+
+	@OneToOne(optional = false)
+	@JoinColumn(name = "bag_id", nullable = false)
+	private Bag bag;
+
+	@ManyToOne(optional = false)
 	private Patient patient;
-	
-	
-	public List<Transaction> getTransactions() {
-		return transactions;
-	}
-	public void setTransactions(List<Transaction> transactions) {
-		this.transactions = transactions;
-	}
+
 	public Patient getPatient() {
 		return patient;
 	}
@@ -80,8 +74,8 @@ public class Bill {
 	public void setPaymentMode(PaymentMode paymentMode) {
 		this.paymentMode = paymentMode;
 	}
-	
-	
-	
-	
+
+
+
+
 }
