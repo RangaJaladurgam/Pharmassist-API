@@ -18,16 +18,31 @@ public class Bag {
 	@Id
 	@GenerateCustomId
 	private String bagId;
+	
+	@OneToMany(mappedBy = "bag", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BillItem> billItems;
 
 	@ManyToOne(optional = false) // Explicitly indicate non-nullability
     @JoinColumn(name = "pharmacy_id", nullable = false)
     private Pharmacy pharmacy;
 
-    @OneToMany(mappedBy = "bag", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BillItem> billItems;
-
-    @OneToOne(mappedBy = "bag", cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "bag", cascade = CascadeType.ALL, orphanRemoval = true)
     private Bill bill;
+    
+    
+    public void addItem(BillItem billItem) {
+    	billItems.add(billItem);
+    	billItem.setBag(this);
+    }
+    
+    public void removeItem(BillItem billItem) {
+    	billItems.remove(billItem);
+    	billItem.setBag(null);
+    }
+    
+    public void clearItems() {
+    	billItems.clear();
+    }
 
 	public String getBagId() {
 		return bagId;

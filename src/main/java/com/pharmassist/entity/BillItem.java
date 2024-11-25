@@ -12,6 +12,23 @@ public class BillItem {
 	@Id
 	@GenerateCustomId
 	private String billItemId;
+	private String name;
+	private String dosage;
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDosage() {
+		return dosage;
+	}
+
+	public void setDosage(String dosage) {
+		this.dosage = dosage;
+	}
 
 	private Integer quantity;
 	private Double pricePerItem;
@@ -22,8 +39,8 @@ public class BillItem {
 	private Bag bag;
 
 	@ManyToOne
-	@JoinColumn(name = "medicine_id", nullable = false)
 	private Medicine medicine;
+
 
 	public String getBillItemId() {
 		return billItemId;

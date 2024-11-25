@@ -60,7 +60,6 @@ public class Medicine {
 	@ManyToOne
 	private Pharmacy pharmacy;
 
-	
 
 	public String getMedicineId() {
 		return medicineId;

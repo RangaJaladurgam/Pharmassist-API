@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import com.pharmassist.config.GenerateCustomId;
 import com.pharmassist.enums.PaymentMode;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -25,13 +26,21 @@ public class Bill {
 	@Enumerated(EnumType.STRING)
 	private PaymentMode paymentMode;
 
-	@OneToOne(optional = false)
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "bag_id", nullable = false)
 	private Bag bag;
-
-	@ManyToOne(optional = false)
+	
+	@ManyToOne
 	private Patient patient;
 
+
+	public Bag getBag() {
+		return bag;
+	}
+	public void setBag(Bag bag) {
+		this.bag = bag;
+	}
+	
 	public Patient getPatient() {
 		return patient;
 	}
