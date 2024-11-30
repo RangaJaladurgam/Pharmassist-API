@@ -41,8 +41,8 @@ public class AdminService {
 						.orElseThrow(()-> new AdminNotFoundByIdException("Failed to find the Admin"));
 	}
 
-	public AdminResponse updateAdmin(String adminId, AdminRequest adminRequest) {
-		return adminRepository.findById(adminId)
+	public AdminResponse updateAdmin(String email, AdminRequest adminRequest) {
+		return adminRepository.findByEmail(email)
 						.map((exAdmin)->{
 							exAdmin = adminMapper.mapToAdmin(adminRequest, exAdmin);
 							exAdmin.setPassword(passwordEncoder.encode(exAdmin.getPassword()));

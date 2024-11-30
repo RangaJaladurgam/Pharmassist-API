@@ -12,4 +12,5 @@ public interface MedicineRepository extends JpaRepository<Medicine, String>{
 	
 	@Query("SELECT m FROM Medicine m WHERE m.name LIKE %:userInput% OR m.ingredients LIKE %:userInput%")
 	public List<Medicine> findMedicineByNameOrIngredient(@Param("userInput") String userInput);
+
 }	

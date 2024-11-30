@@ -2,6 +2,7 @@ package com.pharmassist.service;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,11 +78,12 @@ public class MedicineService {
 			medicine.setIngredients(row.getCell(4).getStringCellValue());
 			medicine.setManufacturer(row.getCell(5).getStringCellValue());
 			medicine.setPrice(row.getCell(6).getNumericCellValue());
-			medicine.setExpiryDate(LocalDate.parse(row.getCell(7).getStringCellValue()));
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			medicine.setExpiryDate(LocalDate.parse(row.getCell(7).getStringCellValue(),formatter));
 			medicine.setStockQuantity((int) row.getCell(8).getNumericCellValue());
 
 		} catch (NullPointerException | IllegalStateException | DateTimeParseException e) {
-			throw new IllegalArgumentException("Invalid data in row " + row.getRowNum(), e);
+			System.out.println(e.getMessage());
 		}
 
 		return medicine;

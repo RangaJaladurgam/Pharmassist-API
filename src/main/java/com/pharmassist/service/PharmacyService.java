@@ -61,9 +61,10 @@ public class PharmacyService {
 	}
 
 
-	public PharmacyResponse updatePharmacy(PharmacyRequest pharmacyRequest, String pharmacyId) {
-		return pharmacyRepository.findById(pharmacyId)
-							.map((pharmacy)->{
+	public PharmacyResponse updatePharmacy(PharmacyRequest pharmacyRequest, String email) {
+		return adminRepository.findByEmail(email)
+							.map((admin)->{
+								Pharmacy pharmacy = admin.getPharmacy();
 								pharmacy = pharmacyRepository.save(pharmacyMapper.mapToPhamacy(pharmacyRequest, pharmacy));
 								return pharmacyMapper.mapToPharmacyResponse(pharmacy);
 							})

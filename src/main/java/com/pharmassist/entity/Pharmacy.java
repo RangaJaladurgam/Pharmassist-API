@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.pharmassist.config.GenerateCustomId;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -11,38 +12,39 @@ import jakarta.persistence.OneToOne;
 
 @Entity
 public class Pharmacy {
-	
+
 	@Id
 	@GenerateCustomId
 	private String pharmacyId;
 	private String name;
 	private String gstNo;
 	private String licenseNo;
-	
+
 	@OneToOne(mappedBy = "pharmacy")
 	private Admin admin;
-	
+
 	@OneToMany(mappedBy = "pharmacy")
 	private List<Patient> patients;
-	
+
 	@OneToMany(mappedBy = "pharmacy")
 	private List<Medicine> medicines;
-	
-	@OneToMany(mappedBy = "pharmacy")
-	private List<Transaction> transactions;
-	
-	
+
+	@OneToMany(mappedBy = "pharmacy", cascade = CascadeType.ALL)
+	private List<Bag> bags;
+
+
 	public List<Medicine> getMedicines() {
 		return medicines;
 	}
 	public void setMedicines(List<Medicine> medicines) {
 		this.medicines = medicines;
 	}
-	public List<Transaction> getTransactions() {
-		return transactions;
+
+	public List<Bag> getBags() {
+		return bags;
 	}
-	public void setTransactions(List<Transaction> transactions) {
-		this.transactions = transactions;
+	public void setBags(List<Bag> bags) {
+		this.bags = bags;
 	}
 	public Admin getAdmin() {
 		return admin;
@@ -81,7 +83,7 @@ public class Pharmacy {
 	public void setPatients(List<Patient> patients) {
 		this.patients = patients;
 	}
-	
-	
-	
+
+
+
 }
