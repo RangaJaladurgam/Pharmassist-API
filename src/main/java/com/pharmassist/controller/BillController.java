@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pharmassist.entity.Bill;
 import com.pharmassist.enums.PaymentMode;
+import com.pharmassist.responsedto.BillResponse;
 import com.pharmassist.service.BillService;
 import com.pharmassist.util.AppResponseBuilder;
 import com.pharmassist.util.ResponseStructure;
@@ -44,8 +45,8 @@ public class BillController {
         return response.success(HttpStatus.OK, msg);
     }
 	@PostMapping("/bills/{billId}")
-	public ResponseEntity<ResponseStructure<Bill>> completeBill(@PathVariable String billId,@RequestParam PaymentMode paymentMode){
-		Bill bill = billService.completeBill(billId,paymentMode);
+	public ResponseEntity<ResponseStructure<BillResponse>> completeBill(@PathVariable String billId,@RequestParam PaymentMode paymentMode){
+		BillResponse bill = billService.completeBill(billId,paymentMode);
 		return response.success(HttpStatus.OK, "Bill Generated Successfully",bill);
 	}
 	
@@ -63,9 +64,9 @@ public class BillController {
 		return response.success(HttpStatus.OK, message);
 	}
 	
-	@GetMapping("/bills")
-	public ResponseEntity<ResponseStructure<Bill>> getBill(@PathVariable String billId){
-		Bill bill = billService.getBill(billId);
+	@GetMapping("/bills/find/{billId}")
+	public ResponseEntity<ResponseStructure<BillResponse>> getBill(@PathVariable String billId){
+		BillResponse bill = billService.getBill(billId);
 		return response.success(HttpStatus.FOUND, "bill found", bill);
 	}
 	
