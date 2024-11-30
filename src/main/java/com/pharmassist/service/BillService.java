@@ -11,12 +11,14 @@ import com.pharmassist.entity.Medicine;
 import com.pharmassist.entity.Patient;
 import com.pharmassist.enums.PaymentMode;
 import com.pharmassist.exception.PatientNotFoundByIdException;
+import com.pharmassist.mapper.BillMapper;
 import com.pharmassist.repository.AdminRepository;
 import com.pharmassist.repository.BagRepository;
 import com.pharmassist.repository.BillItemRepository;
 import com.pharmassist.repository.BillRepository;
 import com.pharmassist.repository.MedicineRepository;
 import com.pharmassist.repository.PatientRepository;
+import com.pharmassist.responsedto.BillResponse;
 import com.pharmassist.util.UpdateQuantityRequest;
 
 import jakarta.transaction.Transactional;
@@ -29,9 +31,10 @@ public class BillService {
 	private final BagRepository bagRepository;
 	private final MedicineRepository medicineRepository;
 	private final PatientRepository patientRepository;
+	private final BillMapper billMapper;
 
 
-	public BillService(BillRepository billRepository, MedicineRepository medicineRepository, BillItemRepository billItemRepository, BagRepository bagRepository, PatientRepository patientRepository, AdminRepository adminRepository) {
+	public BillService(BillRepository billRepository, MedicineRepository medicineRepository, BillItemRepository billItemRepository, BagRepository bagRepository, PatientRepository patientRepository, AdminRepository adminRepository, BillMapper billMapper) {
 		super();
 		this.adminRepository = adminRepository;
 		this.billRepository = billRepository;
@@ -39,6 +42,7 @@ public class BillService {
 		this.bagRepository = bagRepository;
 		this.medicineRepository = medicineRepository;
 		this.patientRepository = patientRepository;
+		this.billMapper = billMapper;
 	}
 
 	@Transactional
@@ -72,23 +76,42 @@ public class BillService {
 		if(medicine.getStockQuantity()<quantity)
 			throw null;
 		
-		BillItem billItem = new BillItem();
-		billItem.setDosage(medicine.getDosageInMg()+ " mg");
-		billItem.setName(medicine.getName());
-		billItem.setPricePerItem(medicine.getPrice());
-		billItem.setQuantity(quantity);
-		billItem.setTotalPrice(medicine.getPrice()*quantity);
-		billItem.setMedicine(medicine);
-		medicine.setStockQuantity(medicine.getStockQuantity()-quantity);
+		 // Retrieve the bag from the bill
+	    Bag bag = bill.getBag();
+	    if (bag == null) {
+	        throw new RuntimeException("Bag not found for the bill");
+	    }
 
-		if(bill.getBag()!=null) {
-			billItem.setBag(bill.getBag());
-			bill.getBag().addItem(billItem);
-		}
-		
-		billItemRepository.save(billItem);
-		medicineRepository.save(medicine);
-		return "Item added Successfully";
+	    // Check if the item already exists in the bag
+	    BillItem existingItem = bag.getBillItems().stream()
+	            .filter(item -> item.getMedicine().getMedicineId().equals(medicineId))
+	            .findFirst()
+	            .orElse(null);
+
+	    if (existingItem != null) {
+	        // Update the existing item
+	        existingItem.setQuantity(existingItem.getQuantity() + quantity);
+	        existingItem.setTotalPrice(existingItem.getQuantity() * existingItem.getPricePerItem());
+	    } else {
+	        // Create a new BillItem if it doesn't exist
+	        BillItem newItem = new BillItem();
+	        newItem.setDosage(medicine.getDosageInMg() + " mg");
+	        newItem.setName(medicine.getName());
+	        newItem.setPricePerItem(medicine.getPrice());
+	        newItem.setQuantity(quantity);
+	        newItem.setTotalPrice(medicine.getPrice() * quantity);
+	        newItem.setMedicine(medicine);
+	        newItem.setBag(bag);
+	        bag.addItem(newItem);
+	    }
+
+	    // Update the stock quantity of the medicine
+	    medicine.setStockQuantity(medicine.getStockQuantity() - quantity);
+	    
+	    // Save changes to the repositories
+	    billItemRepository.saveAll(bag.getBillItems());
+	    medicineRepository.save(medicine);
+	    return "Item added Successfully";
 	}
 
 	public String removeItemFromBag(String billId, String billItemId) {
@@ -130,20 +153,22 @@ public class BillService {
 
 	    // Update medicine stock and bill item quantity
 	    billItem.setQuantity(quantity.getQuantity()); // Update the bill item quantity
+		billItem.setTotalPrice(billItem.getPricePerItem()*quantity.getQuantity());
 	    medicine.setStockQuantity(medicine.getStockQuantity() - quantityDifference); // Adjust the stock
 
 		billItem.setBillItemId(billItemId);
+
 		medicineRepository.save(medicine);
 		billItemRepository.save(billItem);
 		return "updated quantity";
 	}
 
-	public Bill getBill(String billId) {
-		return billRepository.findById(billId).orElseThrow(null);
+	public BillResponse getBill(String billId) {
+		return billMapper.mapToBillResponse(billRepository.findById(billId).orElseThrow(null));
 	}
 
 	@Transactional
-	public Bill completeBill(String billId,PaymentMode paymentMode) {
+	public BillResponse completeBill(String billId,PaymentMode paymentMode) {
 		Bill bill = billRepository.findById(billId).orElseGet(null);
 		double totalAmount = bill.getBag().getBillItems().stream()
 										  .mapToDouble(BillItem::getTotalPrice)
@@ -159,7 +184,7 @@ public class BillService {
 		
 //		bagRepository.delete(bill.getBag());
 		
-		return bill; 
+		return billMapper.mapToBillResponse(bill); 
 		
 	}
 
