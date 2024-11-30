@@ -30,6 +30,25 @@
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
+	<!-- Spring Boot Starter for Thymeleaf -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>
+
+    <!-- Flying Saucer PDF Renderer -->
+    <dependency>
+        <groupId>org.xhtmlrenderer</groupId>
+        <artifactId>flying-saucer-pdf-openpdf</artifactId>
+        <version>9.1.22</version>
+    </dependency>
+
+    <!-- iText (for PDF generation) -->
+    <dependency>
+        <groupId>com.lowagie</groupId>
+        <artifactId>itext</artifactId>
+        <version>2.1.7</version>
+    </dependency>
 			<!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
 		<dependency>
       		<groupId>org.springframework.boot</groupId>
