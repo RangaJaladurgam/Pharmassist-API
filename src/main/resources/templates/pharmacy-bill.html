@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"></meta>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h2, .header h3 {
+            margin: 5px 0;
+        }
+        .section-title {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        .bill-details {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .bill-details th, .bill-details td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .bill-details th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+        .total-section {
+            margin-top: 20px;
+            text-align: right;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .total-section .label {
+            margin-right: 10px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="header">
+        <h2 th:text="${pharmacyname}">Pharmacy Name</h2>
+        <h3>Pharmacy Receipt</h3>
+        <p>Bill ID: <span th:text="${orderId}">12345</span></p>
+        <p>Date: <span th:text="${dateTime}">01/12/2024</span></p>
+    </div>
+
+    <!-- Customer Details -->
+    <div>
+        <p class="section-title">Customer Details</p>
+        <p><strong>Name:</strong> <span th:text="${customerName}">John Doe</span></p>
+        <p><strong>Mobile:</strong> <span th:text="${customerMobile}">9090909090</span></p>
+    </div>
+
+    <!-- Bill Details Table -->
+    <div>
+        <p class="section-title">Bill Details</p>
+        <table class="bill-details">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Price p.item</th>
+                    <th>Total Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${items}">
+                    <td th:text="${item.name}">Item Name</td>
+                    <td th:text="${item.quantity}">1</td>
+                    <td th:text="${item.priceperitem}">100</td>
+                    <td th:text="${item.price}">100</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Total Section -->
+    <div class="total-section">
+        <p><span class="label">Total Amount:</span> ₹<span th:text="${totalAmount}">1000</span></p>
+        <p><span class="label">Total Payable Amount:</span> ₹<span th:text="${totalPayAmount}">1000</span></p>
+        <p><span class="label">Payment Mode:</span> <span th:text="${paymentMode}">Cash</span></p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Thank you for your purchase!</p>
+        <p>Visit again.</p>
+    </div>
+</body>
+</html>
