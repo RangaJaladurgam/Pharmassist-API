@@ -163,8 +163,8 @@ public class BillService {
 		return "updated quantity";
 	}
 
-	public BillResponse getBill(String billId) {
-		return billMapper.mapToBillResponse(billRepository.findById(billId).orElseThrow(null));
+	public Bill getBill(String billId) {
+		return billRepository.findById(billId).orElseThrow(null);
 	}
 
 	@Transactional
