@@ -19,14 +19,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pharmassist.entity.Bill;
 import com.pharmassist.enums.PaymentMode;
+import com.pharmassist.responsedto.AdminResponse;
 import com.pharmassist.responsedto.BillResponse;
 import com.pharmassist.service.BillService;
 import com.pharmassist.service.PdfService;
 import com.pharmassist.util.AppResponseBuilder;
+import com.pharmassist.util.ErrorStructure;
 import com.pharmassist.util.ResponseStructure;
 import com.pharmassist.util.SimpleResponseStructure;
 import com.pharmassist.util.UpdateQuantityRequest;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletResponse;
 
 
@@ -44,29 +50,80 @@ public class BillController {
 		this.response = response;
 	}
 	
+	@Operation(description = "The End-point can be used to create the Bill",
+			responses = {
+					@ApiResponse(responseCode = "201",description = "Bill Created"),
+					@ApiResponse(responseCode = "404",description = "Request not found",
+							content = {
+									@Content(schema = @Schema(implementation = ErrorStructure.class))
+							}
+							)
+						}
+			)
 	@PostMapping("bills/create")
 	public ResponseEntity<SimpleResponseStructure> createBill(@RequestParam("phoneNumber") String phoneNumber){
 		String message = billService.createBill(phoneNumber);
-		return response.success(HttpStatus.OK,message);
+		return response.success(HttpStatus.CREATED,message);
 	}
 	
+	@Operation(description = "The End-point can be used to add the item to the bag",
+			responses = {
+					@ApiResponse(responseCode = "200",description = "Item Added"),
+					@ApiResponse(responseCode = "404",description = "Request not found",
+							content = {
+									@Content(schema = @Schema(implementation = ErrorStructure.class))
+							}
+							)
+						}
+			)
 	@PostMapping("/{billId}/add-item")
     public ResponseEntity<SimpleResponseStructure> addItemToBag(@PathVariable String billId, @RequestParam String medicineId,@RequestParam int quantity) {
         String msg = billService.addItemToBag(billId, medicineId,quantity);
         return response.success(HttpStatus.OK, msg);
     }
+	
+	@Operation(description = "The End-point can be used to complete the bill",
+			responses = {
+					@ApiResponse(responseCode = "200",description = "Bill Completed"),
+					@ApiResponse(responseCode = "404",description = "Request not found",
+							content = {
+									@Content(schema = @Schema(implementation = ErrorStructure.class))
+							}
+							)
+						}
+			)
 	@PostMapping("/bills/{billId}")
 	public ResponseEntity<ResponseStructure<BillResponse>> completeBill(@PathVariable String billId,@RequestParam PaymentMode paymentMode){
 		BillResponse bill = billService.completeBill(billId,paymentMode);
 		return response.success(HttpStatus.OK, "Bill Generated Successfully",bill);
 	}
 	
+	@Operation(description = "The End-point can be used to remove the item from the bag",
+			responses = {
+					@ApiResponse(responseCode = "200",description = "Item removed"),
+					@ApiResponse(responseCode = "404",description = "Request not found",
+							content = {
+									@Content(schema = @Schema(implementation = ErrorStructure.class))
+							}
+							)
+						}
+			)
 	@DeleteMapping("/bills/{billId}/remove-item/{billItemId}")
 	public ResponseEntity<SimpleResponseStructure> removeItemFromBag(@PathVariable String billId,@PathVariable String billItemId){
 		String message = billService.removeItemFromBag(billId,billItemId);
 		return response.success(HttpStatus.OK, message);
 	}
 	
+	@Operation(description = "The End-point can be used to update item quantity",
+			responses = {
+					@ApiResponse(responseCode = "200",description = "Quantity updated"),
+					@ApiResponse(responseCode = "404",description = "Request not found",
+							content = {
+									@Content(schema = @Schema(implementation = ErrorStructure.class))
+							}
+							)
+						}
+			)
 	@PatchMapping("/bills/{billId}/update-item/{billItemId}")
 	public ResponseEntity<SimpleResponseStructure> updateItemQuantity(@PathVariable String billId,
 																	 @PathVariable String billItemId,
@@ -75,13 +132,32 @@ public class BillController {
 		return response.success(HttpStatus.OK, message);
 	}
 	
+	@Operation(description = "The End-point can be used to find the bill",
+			responses = {
+					@ApiResponse(responseCode = "302",description = "Bill found"),
+					@ApiResponse(responseCode = "404",description = "Request not found",
+							content = {
+									@Content(schema = @Schema(implementation = ErrorStructure.class))
+							}
+							)
+						}
+			)
 	@GetMapping("/bills/find/{billId}")
 	public ResponseEntity<ResponseStructure<Bill>> getBill(@PathVariable String billId){
 		Bill bill = billService.getBill(billId);
 		return response.success(HttpStatus.FOUND, "bill found", bill);
 	}
 
-
+	@Operation(description = "The End-point can be used to generate bill pdf",
+			responses = {
+					@ApiResponse(responseCode = "200",description = "PDF Created"),
+					@ApiResponse(responseCode = "404",description = "Request not found",
+							content = {
+									@Content(schema = @Schema(implementation = ErrorStructure.class))
+							}
+							)
+						}
+			)
     @GetMapping("/bills/{billId}/generate")
     public void generateZomatoBillPdf(@PathVariable String billId,HttpServletResponse response) throws Exception {
     	Bill bill = billService.getBill(billId);
