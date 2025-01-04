@@ -159,10 +159,10 @@ public class BillController {
 						}
 			)
     @GetMapping("/bills/{billId}/generate")
-    public void generateZomatoBillPdf(@PathVariable String billId,HttpServletResponse response) throws Exception {
+    public void generateBillPdf(@PathVariable String billId,HttpServletResponse response) throws Exception {
     	Bill bill = billService.getBill(billId);
     	
-        // Sample data for the Zomato bill
+       
         Map<String, Object> data = new HashMap<>();
         data.put("orderId", bill.getBillId());
         data.put("customerName", bill.getPatient().getName());
