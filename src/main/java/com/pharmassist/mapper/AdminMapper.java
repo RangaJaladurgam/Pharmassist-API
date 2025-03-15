@@ -8,7 +8,14 @@ import com.pharmassist.responsedto.AdminResponse;
 
 @Component
 public class AdminMapper {
+		
+	private PharmacyMapper mapper;	
 	
+	public AdminMapper(PharmacyMapper mapper) {
+		super();
+		this.mapper = mapper;
+	}
+
 	public Admin mapToAdmin(AdminRequest adminRequest,Admin admin) {
 		admin.setEmail(adminRequest.getEmail());
 		admin.setPassword(adminRequest.getPassword());
@@ -20,6 +27,11 @@ public class AdminMapper {
 		AdminResponse adminResponse = new AdminResponse();
 		adminResponse.setAdminId(admin.getAdminId());
 		adminResponse.setEmail(admin.getEmail());
+		adminResponse.setPhoneNumber(admin.getPhoneNumber());
+		if(admin.getPharmacy()==null)
+			adminResponse.setPharmacyResponse(null);
+		else
+			adminResponse.setPharmacyResponse(mapper.mapToPharmacyResponse(admin.getPharmacy()));
 		return adminResponse;
 	}
 }

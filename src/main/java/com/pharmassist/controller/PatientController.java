@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +29,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @Tag(name = "Patient Controller",description = "The End-points can be used to operate on Patient Entity")
 public class PatientController {
@@ -54,9 +58,11 @@ public class PatientController {
 									@Content(schema = @Schema(implementation = ErrorStructure.class))
 							})
 			})
-	@PostMapping("/pharmacy/{pharmacyId}/patients")
-	private ResponseEntity<ResponseStructure<PatientResponse>> addPatient(@RequestBody @Valid PatientRequest patientRequest,@PathVariable String pharmacyId){
-		PatientResponse patientResponse = patientService.addPatient(patientRequest,pharmacyId);
+	@PostMapping("/pharmacy/patients")
+	private ResponseEntity<ResponseStructure<PatientResponse>> addPatient(@RequestBody @Valid PatientRequest patientRequest){
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String email = authentication.getName();
+		PatientResponse patientResponse = patientService.addPatient(patientRequest,email);
 		return response.success(HttpStatus.CREATED,"Patient Added", patientResponse);
 	}
 	
@@ -71,9 +77,11 @@ public class PatientController {
 									@Content(schema = @Schema(implementation = ErrorStructure.class))
 							})
 			})
-	@GetMapping("/pharmacy/{pharmacyId}/patients")
-	private ResponseEntity<ResponseStructure<List<PatientResponse>>> findAllPatientsByPharmacy(@PathVariable String pharmacyId){
-		List<PatientResponse> patientsResponses = patientService.findAllPatientsByPharmacy(pharmacyId);
+	@GetMapping("/pharmacy/patients")
+	private ResponseEntity<ResponseStructure<List<PatientResponse>>> findAllPatientsByPharmacy(){
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String email = authentication.getName();
+		List<PatientResponse> patientsResponses = patientService.findAllPatientsByPharmacy(email);
 		return response.success(HttpStatus.FOUND, "Patients Found", patientsResponses);
 	}
 	
@@ -96,6 +104,15 @@ public class PatientController {
 	private ResponseEntity<ResponseStructure<PatientResponse>> updatePatient(@RequestBody @Valid PatientRequest patientRequest,@PathVariable String patientId){
 		PatientResponse patientResponse = patientService.updatePatient(patientRequest,patientId);
 		return response.success(HttpStatus.OK, "Patient Updated", patientResponse);
+	}
+	
+	
+	@GetMapping("/patients/{phoneNumber}")
+	private ResponseEntity<ResponseStructure<PatientResponse>> findPatientByPhoneNumber(@PathVariable String phoneNumber){
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String email = authentication.getName();
+		PatientResponse patientResponse = patientService.findPatientByPhoneNumber(email,phoneNumber);
+		return response.success(HttpStatus.FOUND, "Patient Found", patientResponse);
 	}
 	
 	

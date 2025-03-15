@@ -26,7 +26,6 @@ public class Patient {
 	@Enumerated(EnumType.STRING)
 	private Gender gender;
 	
-	private LocalDate dateOfBirth;
 	
 	@ManyToOne
 	private Pharmacy pharmacy;
@@ -77,12 +76,7 @@ public class Patient {
 	public void setGender(Gender gender) {
 		this.gender = gender;
 	}
-	public LocalDate getDateOfBirth() {
-		return dateOfBirth;
-	}
-	public void setDateOfBirth(LocalDate dateOfBirth) {
-		this.dateOfBirth = dateOfBirth;
-	}
+
 	
 	
 	

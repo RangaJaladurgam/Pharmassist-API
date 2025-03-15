@@ -25,6 +25,7 @@ public class PatientExceptionHandler {
 		return response.error(HttpStatus.NOT_FOUND, ex.getMessage(), "No patients found");
 	}
 	
+	@ExceptionHandler(PatientNotFoundByIdException.class)
 	public ResponseEntity<ErrorStructure<String>> handlePatientNotFoundById(PatientNotFoundByIdException ex){
 		return response.error(HttpStatus.NOT_FOUND, ex.getMessage(), "Patient Not Found By Id");
 	}

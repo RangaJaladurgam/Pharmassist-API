@@ -9,13 +9,18 @@ import com.pharmassist.responsedto.PatientResponse;
 @Component
 public class PatientMapper {
 
+	private PharmacyMapper pharmacyMapper;
 	
+	public PatientMapper(PharmacyMapper pharmacyMapper) {
+		super();
+		this.pharmacyMapper = pharmacyMapper;
+	}
+
 	public Patient mapToPatient(PatientRequest patientRequest,Patient patient) {
 		patient.setName(patientRequest.getName());
 		patient.setPhoneNumber(patientRequest.getPhoneNumber());
 		patient.setEmail(patientRequest.getEmail());
 		patient.setGender(patientRequest.getGender());
-		patient.setDateOfBirth(patientRequest.getDateOfBirth());
 		
 		return patient;
 	}
@@ -26,6 +31,7 @@ public class PatientMapper {
 		patientResponse.setPatientId(patient.getPatientId());
 		patientResponse.setGender(patient.getGender());
 		patientResponse.setEmail(patient.getEmail());
+		patientResponse.setPharmacyResponse(pharmacyMapper.mapToPharmacyResponse(patient.getPharmacy()));
 		
 		return patientResponse;
 	}

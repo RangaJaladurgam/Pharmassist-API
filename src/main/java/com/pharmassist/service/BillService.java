@@ -1,5 +1,7 @@
 package com.pharmassist.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import com.pharmassist.entity.BillItem;
 import com.pharmassist.entity.Medicine;
 import com.pharmassist.entity.Patient;
 import com.pharmassist.enums.PaymentMode;
+import com.pharmassist.exception.AdminNotFoundByIdException;
 import com.pharmassist.exception.PatientNotFoundByIdException;
 import com.pharmassist.mapper.BillMapper;
 import com.pharmassist.repository.AdminRepository;
@@ -46,8 +49,12 @@ public class BillService {
 	}
 
 	@Transactional
-	public String createBill(String phoneNumber) {
-		Patient patient = patientRepository.findByPhoneNumber(phoneNumber)
+	public BillResponse createBill(String email,String phoneNumber) {
+		String pharmacyId = adminRepository.findByEmail(email)
+				.orElseThrow(() -> new AdminNotFoundByIdException("Admin not found"))
+				.getPharmacy()
+				.getPharmacyId();
+		Patient patient = patientRepository.findByPhoneNumber(pharmacyId,phoneNumber)
 				.orElseThrow(()-> new PatientNotFoundByIdException("Patient Not found by phoneNumber"));
 		
 		Bill bill = new Bill();
@@ -63,7 +70,7 @@ public class BillService {
 		bagRepository.save(bag);
 		billRepository.save(bill);
 		
-		return "Bill Created";
+		return billMapper.mapToBillResponse(bill);
 	}
 
 	@Transactional
@@ -170,11 +177,17 @@ public class BillService {
 	@Transactional
 	public BillResponse completeBill(String billId,PaymentMode paymentMode) {
 		Bill bill = billRepository.findById(billId).orElseGet(null);
-		double totalAmount = bill.getBag().getBillItems().stream()
+		double total = bill.getBag().getBillItems().stream()
 										  .mapToDouble(BillItem::getTotalPrice)
 										  .sum();
+		double totalAmount = BigDecimal.valueOf(total)
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
 		bill.setTotalAmount(totalAmount);
 		double totalPayAmount = totalAmount + (totalAmount/100)*bill.getGstInPercentage();
+		totalPayAmount = BigDecimal.valueOf(totalPayAmount)
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
 		bill.setTotalPayableAmount(totalPayAmount);
 		bill.setPaymentMode(paymentMode);
 		

@@ -77,9 +77,10 @@ public class AdminController {
 							})
 			}
 			)
-	@GetMapping("/admins/{adminId}")
-	public ResponseEntity<ResponseStructure<AdminResponse>> findAdmin(@PathVariable String adminId){
-		AdminResponse adminResponse = adminService.findAdmin(adminId);
+	@GetMapping("/admins/profile")
+	public ResponseEntity<ResponseStructure<AdminResponse>> findAdmin(){
+		String email = SecurityContextHolder.getContext().getAuthentication().getName();
+		AdminResponse adminResponse = adminService.findAdmin(email);
 		return response.success(HttpStatus.FOUND,"Admin found by Id", adminResponse);
 	}
 	

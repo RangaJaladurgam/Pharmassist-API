@@ -8,7 +8,16 @@ public class PatientResponse {
 	private String name;
 	private String email;
 	private Gender gender;
+	private PharmacyResponse pharmacyResponse;
 	
+	
+	
+	public PharmacyResponse getPharmacyResponse() {
+		return pharmacyResponse;
+	}
+	public void setPharmacyResponse(PharmacyResponse pharmacyResponse) {
+		this.pharmacyResponse = pharmacyResponse;
+	}
 	public String getPatientId() {
 		return patientId;
 	}

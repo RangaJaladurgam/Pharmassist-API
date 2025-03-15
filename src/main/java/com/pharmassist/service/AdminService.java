@@ -35,8 +35,9 @@ public class AdminService {
 		return adminMapper.mapToAdminResponse(admin);
 	}
 
-	public AdminResponse findAdmin(String adminId) {
-		return adminRepository.findById(adminId)
+	public AdminResponse findAdmin(String email) {
+		
+		return adminRepository.findByEmail(email)
 						.map((admin)-> adminMapper.mapToAdminResponse(admin))
 						.orElseThrow(()-> new AdminNotFoundByIdException("Failed to find the Admin"));
 	}
