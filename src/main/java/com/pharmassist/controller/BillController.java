@@ -155,6 +155,29 @@ public class BillController {
 		return response.success(HttpStatus.FOUND, "bill found", bill);
 	}
 
+	
+	
+	@GetMapping("/pharmacy/bills/find-all")
+	public ResponseEntity<ResponseStructure<List<BillResponse>>> findAllBillsByPharmacy(){
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String email = authentication.getName();
+		List<BillResponse> bills= billService.findAllBillsByPharmacy(email);
+		return response.success(HttpStatus.FOUND, "Bills found", bills);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	@Operation(description = "The End-point can be used to generate bill pdf",
 			responses = {
 					@ApiResponse(responseCode = "200",description = "PDF Created"),
@@ -211,6 +234,8 @@ public class BillController {
     }
 	
 	
+	
+		
 	
 	
 }

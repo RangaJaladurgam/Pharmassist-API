@@ -9,10 +9,12 @@ import com.pharmassist.responsedto.BillResponse;
 public class BillMapper {
 
 	private final BagMapper bagMapper;
+	private final PatientMapper patientMapper;
 
-	public BillMapper(BagMapper bagMapper) {
+	public BillMapper(BagMapper bagMapper, PatientMapper patientMapper) {
 		super();
 		this.bagMapper = bagMapper;
+		this.patientMapper = patientMapper;
 	}
 
 
@@ -28,6 +30,7 @@ public class BillMapper {
 		}
 		response.setTotalAmount(bill.getTotalAmount());
 		response.setTotalPayableAmount(bill.getTotalPayableAmount());
+		response.setPatientResponse(patientMapper.mapToPatientResponse(bill.getPatient()));
 		return response;
 	}
 }
