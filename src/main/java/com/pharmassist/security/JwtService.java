@@ -2,6 +2,7 @@ package com.pharmassist.security;
 
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.auth0.jwt.JWT;
@@ -12,7 +13,9 @@ import com.auth0.jwt.interfaces.JWTVerifier;
 
 @Service
 public class JwtService {
-    private static final String SECRET_KEY = System.getProperty("JWT_SECRET"); // Change this!
+	
+	@Value("${jwt.secret}")
+    private String SECRET_KEY;
 
     private static final long EXPIRATION_TIME = 120 * 60 * 1000; // 1 hour
 

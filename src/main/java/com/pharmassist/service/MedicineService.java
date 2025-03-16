@@ -49,10 +49,12 @@ public class MedicineService {
 	@Transactional
 	public String uploadMedicines(MultipartFile file,String email) {
 		List<Medicine> medicines = new ArrayList<>();
-		String pharmacyId = adminRepository.findByEmail(email)
-                .orElseThrow(() -> new AdminNotFoundByIdException("Admin not found"))
-                .getPharmacy()
-                .getPharmacyId();
+		Admin admin = adminRepository.findByEmail(email)
+                .orElseThrow(() -> new AdminNotFoundByIdException("Admin not found"));
+		if(admin.getPharmacy()==null)
+			throw new PharmacyNotFoundByIdException("Pharmacy is not Linked to Admin");
+	    String pharmacyId = admin.getPharmacy()
+	                                       .getPharmacyId();
 				
 		Pharmacy pharmacy = pharmacyRepository.findById(pharmacyId)
 					.orElseThrow(()-> new PharmacyNotFoundByIdException("Failed to Add Medicines because no pharmacy found by Id: "+pharmacyId));
@@ -112,9 +114,11 @@ public class MedicineService {
 	}
 
 	public List<MedicineResponse> findAllMedicines(String email) {
-	    String pharmacyId = adminRepository.findByEmail(email)
-	                                       .orElseThrow(() -> new AdminNotFoundByIdException("Admin not found"))
-	                                       .getPharmacy()
+		Admin admin = adminRepository.findByEmail(email)
+                .orElseThrow(() -> new AdminNotFoundByIdException("Admin not found"));
+		if(admin.getPharmacy()==null)
+			throw new PharmacyNotFoundByIdException("Pharmacy is not Linked to Admin");
+	    String pharmacyId = admin.getPharmacy()
 	                                       .getPharmacyId();
 
 	    return medicineRepository.findAll().stream()

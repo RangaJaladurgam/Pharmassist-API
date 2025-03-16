@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.pharmassist.entity.Admin;
 import com.pharmassist.entity.Bag;
 import com.pharmassist.entity.Bill;
 import com.pharmassist.entity.BillItem;
@@ -15,6 +16,7 @@ import com.pharmassist.entity.Patient;
 import com.pharmassist.enums.PaymentMode;
 import com.pharmassist.exception.AdminNotFoundByIdException;
 import com.pharmassist.exception.PatientNotFoundByIdException;
+import com.pharmassist.exception.PharmacyNotFoundByIdException;
 import com.pharmassist.mapper.BillMapper;
 import com.pharmassist.repository.AdminRepository;
 import com.pharmassist.repository.BagRepository;
@@ -51,10 +53,12 @@ public class BillService {
 
 	@Transactional
 	public BillResponse createBill(String email,String phoneNumber) {
-		String pharmacyId = adminRepository.findByEmail(email)
-				.orElseThrow(() -> new AdminNotFoundByIdException("Admin not found"))
-				.getPharmacy()
-				.getPharmacyId();
+		Admin admin = adminRepository.findByEmail(email)
+                .orElseThrow(() -> new AdminNotFoundByIdException("Admin not found"));
+		if(admin.getPharmacy()==null)
+			throw new PharmacyNotFoundByIdException("Pharmacy is not Linked to Admin");
+	    String pharmacyId = admin.getPharmacy()
+	                                       .getPharmacyId();
 		Patient patient = patientRepository.findByPhoneNumber(pharmacyId,phoneNumber)
 				.orElseThrow(()-> new PatientNotFoundByIdException("Patient Not found by phoneNumber"));
 
@@ -203,10 +207,12 @@ public class BillService {
 	}
 
 	public List<BillResponse> findAllBillsByPharmacy(String email) {
-		String pharmacyId = adminRepository.findByEmail(email)
-												.orElseThrow(()-> new AdminNotFoundByIdException(email))
-												.getPharmacy()
-												.getPharmacyId();
+		Admin admin = adminRepository.findByEmail(email)
+                .orElseThrow(() -> new AdminNotFoundByIdException("Admin not found"));
+		if(admin.getPharmacy()==null)
+			throw new PharmacyNotFoundByIdException("Pharmacy is not Linked to Admin");
+	    String pharmacyId = admin.getPharmacy()
+	                                       .getPharmacyId();
 		
 		return billRepository.findAllBillsByPharamacy(pharmacyId)
 							 .stream()
