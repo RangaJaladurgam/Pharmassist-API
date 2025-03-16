@@ -31,6 +31,7 @@ public class PatientMapper {
 		patientResponse.setPatientId(patient.getPatientId());
 		patientResponse.setGender(patient.getGender());
 		patientResponse.setEmail(patient.getEmail());
+		patientResponse.setPhoneNumber(patient.getPhoneNumber());
 		patientResponse.setPharmacyResponse(pharmacyMapper.mapToPharmacyResponse(patient.getPharmacy()));
 		
 		return patientResponse;

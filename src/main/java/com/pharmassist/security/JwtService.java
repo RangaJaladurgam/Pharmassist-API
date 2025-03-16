@@ -12,7 +12,7 @@ import com.auth0.jwt.interfaces.JWTVerifier;
 
 @Service
 public class JwtService {
-    private static final String SECRET_KEY = "2f6838150d2282aa6a5352e6dcaba6f1ead84ebe854ac63fdc630a8b5aca584a"; // Change this!
+    private static final String SECRET_KEY = System.getProperty("JWT_SECRET"); // Change this!
 
     private static final long EXPIRATION_TIME = 120 * 60 * 1000; // 1 hour
 
