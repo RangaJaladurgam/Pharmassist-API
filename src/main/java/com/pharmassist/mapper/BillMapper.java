@@ -7,12 +7,14 @@ import com.pharmassist.responsedto.BillResponse;
 
 @Component
 public class BillMapper {
-	
+
 	private final BagMapper bagMapper;
-	
-	public BillMapper(BagMapper bagMapper) {
+	private final PatientMapper patientMapper;
+
+	public BillMapper(BagMapper bagMapper, PatientMapper patientMapper) {
 		super();
 		this.bagMapper = bagMapper;
+		this.patientMapper = patientMapper;
 	}
 
 
@@ -22,10 +24,13 @@ public class BillMapper {
 		response.setBillId(bill.getBillId());
 		response.setGstInPercentage(bill.getGstInPercentage());
 		response.setDateTime(bill.getDateTime());
-		response.setPaymentMode(bill.getPaymentMode());
-		response.setBagResponse(bagMapper.mapToBagResponse(bill.getBag()));
+		if(bill.getPaymentMode()!=null) {
+			response.setPaymentMode(bill.getPaymentMode());
+			response.setBagResponse(bagMapper.mapToBagResponse(bill.getBag()));
+		}
 		response.setTotalAmount(bill.getTotalAmount());
 		response.setTotalPayableAmount(bill.getTotalPayableAmount());
+		response.setPatientResponse(patientMapper.mapToPatientResponse(bill.getPatient()));
 		return response;
 	}
 }

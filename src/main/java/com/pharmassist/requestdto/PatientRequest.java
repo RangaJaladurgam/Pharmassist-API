@@ -31,8 +31,6 @@ public class PatientRequest {
 
 	private Gender gender;
 	
-	private LocalDate dateOfBirth;
-	
 	
 	public String getName() {
 		return name;
@@ -57,12 +55,6 @@ public class PatientRequest {
 	}
 	public void setGender(Gender gender) {
 		this.gender = gender;
-	}
-	public LocalDate getDateOfBirth() {
-		return dateOfBirth;
-	}
-	public void setDateOfBirth(LocalDate dateOfBirth) {
-		this.dateOfBirth = dateOfBirth;
 	}
 	
 	

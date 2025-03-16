@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +26,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+@CrossOrigin
 @RestController
 @Tag(name = "MedicineController",description = "The End-points can be used to operate on Medicine")
 public class MedicineController {
@@ -43,9 +47,11 @@ public class MedicineController {
 					@Content(schema = @Schema(implementation = SimpleResponseStructure.class))
 					})
 	})
-	@PostMapping("/pharmacy/{pharmacyId}/medicines/upload")
-	public ResponseEntity<SimpleResponseStructure> uploadMedicines(@RequestParam MultipartFile file,@PathVariable String pharmacyId){
-		String message = medicineService.uploadMedicines(file,pharmacyId);
+	@PostMapping("/pharmacy/medicines/upload")
+	public ResponseEntity<SimpleResponseStructure> uploadMedicines(@RequestParam MultipartFile file){
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String email = authentication.getName();
+		String message = medicineService.uploadMedicines(file,email);
 		return response.success(HttpStatus.CREATED, message);
 	}
 	
@@ -61,5 +67,17 @@ public class MedicineController {
 		List<MedicineResponse> medicines = medicineService.findMedicineByNameOrIngredients(userInput);
 		return response.success(HttpStatus.FOUND, "Medicines Found", medicines);
 	}
+	
+	@GetMapping("/medicines")
+	public ResponseEntity<ResponseStructure<List<MedicineResponse>>> findAllMedicines(){
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String email = authentication.getName(); 
+		List<MedicineResponse> medicines = medicineService.findAllMedicines(email);
+		return response.success(HttpStatus.FOUND, "Medicines Found", medicines);
+	}
+		
+	
+	
+	
 	
 }

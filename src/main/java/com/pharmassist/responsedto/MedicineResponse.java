@@ -20,8 +20,15 @@ public class MedicineResponse {
 	private int stockQuantity;
 	private LocalDate expiryDate;
 	private double price;
+	private PharmacyResponse pharmacyResponse;
 	
 	
+	public PharmacyResponse getPharmacyResponse() {
+		return pharmacyResponse;
+	}
+	public void setPharmacyResponse(PharmacyResponse pharmacyResponse) {
+		this.pharmacyResponse = pharmacyResponse;
+	}
 	public String getMedicineId() {
 		return medicineId;
 	}

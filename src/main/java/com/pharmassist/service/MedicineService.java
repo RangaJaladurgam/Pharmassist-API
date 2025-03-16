@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -13,12 +14,15 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.pharmassist.entity.Admin;
 import com.pharmassist.entity.Medicine;
 import com.pharmassist.entity.Pharmacy;
 import com.pharmassist.enums.Form;
+import com.pharmassist.exception.AdminNotFoundByIdException;
 import com.pharmassist.exception.NoMedicinesFoundException;
 import com.pharmassist.exception.PharmacyNotFoundByIdException;
 import com.pharmassist.mapper.MedicineMapper;
+import com.pharmassist.repository.AdminRepository;
 import com.pharmassist.repository.MedicineRepository;
 import com.pharmassist.repository.PharmacyRepository;
 import com.pharmassist.responsedto.MedicineResponse;
@@ -31,19 +35,25 @@ public class MedicineService {
 		
 	private final MedicineRepository medicineRepository;
 	private final PharmacyRepository pharmacyRepository;
-	public final MedicineMapper medicineMapper;
+	private final MedicineMapper medicineMapper;
+	private final AdminRepository adminRepository;
 
-	public MedicineService(MedicineRepository medicineRepository, PharmacyRepository pharmacyRepository, MedicineMapper medicineMapper) {
+	public MedicineService(MedicineRepository medicineRepository, PharmacyRepository pharmacyRepository, MedicineMapper medicineMapper, AdminRepository adminRepository) {
 		super();
 		this.medicineRepository = medicineRepository;
 		this.pharmacyRepository = pharmacyRepository;
 		this.medicineMapper = medicineMapper;
+		this.adminRepository = adminRepository;
 	}
 
 	@Transactional
-	public String uploadMedicines(MultipartFile file,String pharmacyId) {
+	public String uploadMedicines(MultipartFile file,String email) {
 		List<Medicine> medicines = new ArrayList<>();
-		
+		String pharmacyId = adminRepository.findByEmail(email)
+                .orElseThrow(() -> new AdminNotFoundByIdException("Admin not found"))
+                .getPharmacy()
+                .getPharmacyId();
+				
 		Pharmacy pharmacy = pharmacyRepository.findById(pharmacyId)
 					.orElseThrow(()-> new PharmacyNotFoundByIdException("Failed to Add Medicines because no pharmacy found by Id: "+pharmacyId));
 		
@@ -100,6 +110,19 @@ public class MedicineService {
 				.map(medicineMapper::mapToMedicineResponse)
 				.toList();
 	}
+
+	public List<MedicineResponse> findAllMedicines(String email) {
+	    String pharmacyId = adminRepository.findByEmail(email)
+	                                       .orElseThrow(() -> new AdminNotFoundByIdException("Admin not found"))
+	                                       .getPharmacy()
+	                                       .getPharmacyId();
+
+	    return medicineRepository.findAll().stream()
+	        .filter(medicine -> medicine.getPharmacy().getPharmacyId().equals(pharmacyId))
+	        .map(medicineMapper::mapToMedicineResponse)
+	        .collect(Collectors.toList());
+	}
+
 
 	
 	

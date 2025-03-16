@@ -3,6 +3,7 @@ package com.pharmassist.responsedto;
 import java.time.LocalDateTime;
 
 import com.pharmassist.entity.Bag;
+import com.pharmassist.entity.Patient;
 import com.pharmassist.enums.PaymentMode;
 
 public class BillResponse {
@@ -13,8 +14,18 @@ public class BillResponse {
 	private double totalPayableAmount;
 	private LocalDateTime dateTime;
 	private PaymentMode paymentMode;
+	private PatientResponse patientResponse;
 	private BagResponse bagResponse;
 	
+
+	
+	
+	public PatientResponse getPatientResponse() {
+		return patientResponse;
+	}
+	public void setPatientResponse(PatientResponse patientResponse) {
+		this.patientResponse = patientResponse;
+	}
 	public String getBillId() {
 		return billId;
 	}

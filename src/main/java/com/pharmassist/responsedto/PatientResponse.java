@@ -8,7 +8,23 @@ public class PatientResponse {
 	private String name;
 	private String email;
 	private Gender gender;
+	private String phoneNumber;
+	private PharmacyResponse pharmacyResponse;
 	
+	
+	
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+	public PharmacyResponse getPharmacyResponse() {
+		return pharmacyResponse;
+	}
+	public void setPharmacyResponse(PharmacyResponse pharmacyResponse) {
+		this.pharmacyResponse = pharmacyResponse;
+	}
 	public String getPatientId() {
 		return patientId;
 	}

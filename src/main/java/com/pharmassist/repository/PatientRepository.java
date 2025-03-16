@@ -14,5 +14,7 @@ public interface PatientRepository extends JpaRepository<Patient, String> {
 	@Query("SELECT p FROM Patient p WHERE p.pharmacy.pharmacyId = :pharmacyId")
 	public List<Patient> findPatientsByPharmacy(@Param("pharmacyId") String pharmacyId);
 	
-	public Optional<Patient> findByPhoneNumber(String phoneNumber);
+	@Query("SELECT p FROM Patient p WHERE p.pharmacy.pharmacyId = :pharmacyId and p.phoneNumber = :phoneNumber")
+	public Optional<Patient> findByPhoneNumber(@Param("pharmacyId") String pharmacyId,@Param("phoneNumber") String phoneNumber);
+	
 }	
