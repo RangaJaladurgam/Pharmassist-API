@@ -81,7 +81,25 @@ public class AdminController {
 	public ResponseEntity<ResponseStructure<AdminResponse>> findAdmin(){
 		String email = SecurityContextHolder.getContext().getAuthentication().getName();
 		AdminResponse adminResponse = adminService.findAdmin(email);
-		return response.success(HttpStatus.FOUND,"Admin found by Id", adminResponse);
+		return response.success(HttpStatus.FOUND,"Admin found by Email", adminResponse);
+	}
+	
+	@Operation(description = "The End-point can be used to check the Admin is Already Exists or not",
+			responses = {
+					@ApiResponse(responseCode = "302",description = "Admin Found",
+							content = {
+									@Content(schema = @Schema(implementation = AdminResponse.class))
+							}),
+					@ApiResponse(responseCode = "404",description = "Admin Not Found",
+							content = {
+									@Content(schema = @Schema(implementation = ErrorStructure.class))
+							})
+			}
+			)
+	@GetMapping("/admins/{email}")
+	public ResponseEntity<ResponseStructure<AdminResponse>> findAdminByEmail(@PathVariable String email){
+		AdminResponse adminResponse = adminService.findAdmin(email);
+		return response.success(HttpStatus.FOUND,"Email Already Exists", adminResponse);
 	}
 	
 	
