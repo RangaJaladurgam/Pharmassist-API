@@ -1,28 +1,31 @@
-# Use OpenJDK as the base image
-FROM openjdk:17-jdk-slim
-
-# Set the working directory
+# Stage 1: Build the JAR
+FROM openjdk:17-jdk-slim AS builder
 WORKDIR /app
 
-# Copy Maven wrapper and pom.xml first (to cache dependencies)
+# Copy Maven wrapper and pom.xml first
 COPY mvnw .
-COPY .mvn .mvn
 COPY pom.xml .
+COPY .mvn .mvn
 
-# Download dependencies (this helps in caching)
-RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
+# Ensure Maven wrapper is executable
+RUN chmod +x mvnw
 
-# Copy the rest of the source code
+# Download dependencies
+RUN ./mvnw dependency:go-offline -B
+
+# Copy source code and build
 COPY src src
-
-# Build the application
 RUN ./mvnw clean package -DskipTests
 
-# Copy the built jar file 
-COPY target/Pharmassist-0.0.1-SNAPSHOT.jar.original app.jar
+# Stage 2: Create a smaller image with only the JAR
+FROM openjdk:17-jdk-slim
+WORKDIR /app
 
-# Expose the application port
-EXPOSE 7000
+# Copy JAR from the builder stage
+COPY --from=builder /app/target/Pharmassist-0.0.1-SNAPSHOT.jar app.jar
+
+# Expose port (change if needed)
+EXPOSE 8080
 
 # Run the application
 CMD ["java", "-jar", "app.jar"]
