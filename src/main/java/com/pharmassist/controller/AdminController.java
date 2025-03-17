@@ -20,6 +20,7 @@ import com.pharmassist.service.AdminService;
 import com.pharmassist.util.AppResponseBuilder;
 import com.pharmassist.util.ErrorStructure;
 import com.pharmassist.util.ResponseStructure;
+import com.pharmassist.util.SimpleResponseStructure;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -97,9 +98,9 @@ public class AdminController {
 			}
 			)
 	@GetMapping("/admins/{email}")
-	public ResponseEntity<ResponseStructure<AdminResponse>> findAdminByEmail(@PathVariable String email){
+	public ResponseEntity<SimpleResponseStructure> findAdminByEmail(@PathVariable String email){
 		AdminResponse adminResponse = adminService.findAdmin(email);
-		return response.success(HttpStatus.FOUND,"Email Already Exists", adminResponse);
+		return response.success(HttpStatus.FOUND,"Email Already Exists");
 	}
 	
 	
