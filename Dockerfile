@@ -18,8 +18,8 @@ COPY src src
 # Build the application
 RUN ./mvnw clean package -DskipTests
 
-# Copy the built jar file
-COPY target/Pharmassist-0.0.1-SNAPSHOT.jar app.jar
+# Copy the built jar file 
+COPY target/Pharmassist-0.0.1-SNAPSHOT.jar.original app.jar
 
 # Expose the application port
 EXPOSE 7000
