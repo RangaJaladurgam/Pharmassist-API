@@ -30,6 +30,20 @@
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
+	
+	
+	<dependency>
+    <groupId>io.github.cdimascio</groupId>
+    <artifactId>dotenv-java</artifactId>
+    <version>3.0.0</version>
+</dependency>
+
+	<!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
+	<dependency>
+	    <groupId>com.auth0</groupId>
+	    <artifactId>java-jwt</artifactId>
+	    <version>4.4.0</version>
+	</dependency>
 	<!-- Spring Boot Starter for Thymeleaf -->
     <dependency>
         <groupId>org.springframework.boot</groupId>
