@@ -1,0 +1,5 @@
+# Created at 2025-03-17T14:41:21.645
+Boot Manifest-JAR contains absolute paths in classpath 'D:\Pharmassist API\Pharmassist\target\test-classes'
+Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+'other' has different root
+
